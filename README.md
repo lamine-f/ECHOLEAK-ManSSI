@@ -21,14 +21,34 @@ pip install -r requirements.txt
 ## Structure du Projet
 
 ```
-├── msn-copilot-web-app/           # Application web Copilot
-│   ├── web_app.py                 # Serveur Flask principal (port 8888)
-│   ├── config.json                # Configuration Ollama
+├── msn-copilot-web-app/           # Application web Copilot (Architecture par couches)
+│   ├── web_app.py                 # Point d'entrée (App Factory)
+│   ├── config.py                  # Configuration centralisée
+│   ├── config.json                # Paramètres Ollama
+│   │
+│   ├── app/                       # Package applicatif
+│   │   ├── models/                # Dataclasses (EmailMessage, ServiceStatus)
+│   │   │   └── email.py
+│   │   │
+│   │   ├── services/              # Couche services
+│   │   │   ├── email_service.py      # Operations IMAP
+│   │   │   ├── llm_service.py        # Integration Ollama
+│   │   │   ├── smtp_service.py       # Envoi emails
+│   │   │   ├── webhook_service.py    # Gestion subprocess
+│   │   │   └── health_service.py     # Status services
+│   │   │
+│   │   └── routes/                # Couche routes (Blueprints Flask)
+│   │       ├── main_routes.py        # Routes publiques
+│   │       └── admin_routes.py       # Routes admin
+│   │
 │   ├── templates/
-│   │   └── index.html             # Interface Copilot
+│   │   ├── index.html             # Interface Copilot (victime)
+│   │   └── admin.html             # Interface admin (attaquant)
+│   │
 │   └── static/
-│       ├── css/copilot.css        # Styles
-│       └── js/copilot.js          # Logique frontend
+│       └── js/
+│           ├── copilot.js         # Logique frontend Copilot
+│           └── admin.js           # Logique frontend admin
 │
 ├── setup-configs/                  # Scripts de configuration
 │   ├── auto_setup_emails.py       # Setup des emails
@@ -46,44 +66,67 @@ pip install -r requirements.txt
 
 ## Démo Rapide (10 minutes)
 
-### 1. Lancer l'infrastructure Docker (Terminal 1)
+### Option A: Via Interface Admin (Recommandé)
+
+#### 1. Lancer l'infrastructure Docker
 ```bash
 docker-compose up -d
 ```
-- **GreenMail** : SMTP port 3025, IMAP port 3143
-- Interface web : http://localhost:8080
 
-### 2. Lancer le webhook d'exfiltration (Terminal 2)
-```bash
-cd setup-configs
-python webhook_server.py
-```
-- Serveur "miroir-brise.net" : http://localhost:5000
-
-### 3. Envoyer les emails (Terminal 3)
-```bash
-cd setup-configs
-python auto_setup_emails.py
-```
-- Envoie les emails légitimes + l'email malveillant
-
-### 4. Lancer l'application Copilot (Terminal 4)
+#### 2. Lancer l'application Copilot
 ```bash
 cd msn-copilot-web-app
 python web_app.py
 ```
-- Interface Copilot : http://localhost:8888
 
-### 5. Démonstration
+#### 3. Ouvrir l'interface Admin
+- Naviguer vers http://localhost:8888/admin
+- Interface de contrôle complète avec:
+  - Status de tous les services
+  - Envoi des emails (bouton [SEND EMAILS])
+  - Démarrage du webhook (bouton [START])
+  - Visualisation des logs et données exfiltrées
+  - Lien vers l'interface Copilot victime
+
+#### 4. Démonstration
+- Cliquer sur [OPEN COPILOT INTERFACE] pour ouvrir l'interface victime
+- Cliquer sur le bouton d'envoi pour déclencher l'attaque
+- Observer les données exfiltrées dans l'interface admin
+
+### Option B: Via Terminal (Classique)
+
+#### 1. Lancer l'infrastructure Docker (Terminal 1)
+```bash
+docker-compose up -d
+```
+
+#### 2. Lancer le webhook d'exfiltration (Terminal 2)
+```bash
+cd setup-configs
+python webhook_server.py
+```
+
+#### 3. Envoyer les emails (Terminal 3)
+```bash
+cd setup-configs
+python auto_setup_emails.py
+```
+
+#### 4. Lancer l'application Copilot (Terminal 4)
+```bash
+cd msn-copilot-web-app
+python web_app.py
+```
+
+#### 5. Démonstration
 1. Ouvrir http://localhost:8888 dans le navigateur
-2. L'interface affiche "Bonjour Awa. Sur quoi devrions-nous nous pencher aujourd'hui ?"
-3. Le message est pré-rempli : "Copilot, peux-tu me faire un résumé de mes emails importants reçus ce matin ?"
-4. Cliquer sur le bouton d'envoi (↑)
-5. Observer la réponse de Copilot qui inclut les données exfiltrées
+2. Cliquer sur le bouton d'envoi
+3. Observer la réponse avec les données exfiltrées
 
-### 6. Voir les données exfiltrées
-- Webhook : http://localhost:5000/history
-- Ou dans le terminal du webhook
+### Voir les données exfiltrées
+- Interface Admin : http://localhost:8888/admin (section "DONNEES EXFILTREES")
+- Webhook direct : http://localhost:5000/history
+- Terminal du webhook
 
 ## Résultat Attendu
 
@@ -113,14 +156,23 @@ GhostFrame capture :
 ```
 
 ### Ports utilisés
-- **8888** : Application web Copilot
+- **8888** : Application web Copilot + Admin
 - **5000** : Serveur webhook d'exfiltration
 - **3025** : GreenMail SMTP
 - **3143** : GreenMail IMAP
 - **8080** : GreenMail Web Interface
 - **11434** : Ollama API
 
-## Architecture de l'Attaque
+## Architecture de l'Application
+
+### Architecture par Couches
+- **config.py** : Configuration centralisée
+- **app/models/** : Structures de données (dataclasses)
+- **app/services/** : Logique métier (IMAP, LLM, SMTP, Webhook)
+- **app/routes/** : Endpoints HTTP (Flask Blueprints)
+- **web_app.py** : App Factory et point d'entrée
+
+### Architecture de l'Attaque
 
 ```
 [Email malveillant] → [GreenMail IMAP] → [Web App Copilot]
