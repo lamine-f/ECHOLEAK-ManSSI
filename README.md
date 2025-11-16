@@ -9,8 +9,8 @@ Démonstration d'une attaque **Zero-Click Prompt Injection** simulant la vulnér
 ## Prérequis
 
 - Python 3.8+
-- Ollama avec modèle (qwen2.5:0.5b recommandé)
-- Serveur mail (Mailhog existant ou via Docker)
+- Docker Desktop
+- Ollama avec modèle (llama3.2:3b recommandé)
 
 ## Installation
 
@@ -21,37 +21,68 @@ pip install -r requirements.txt
 ## Structure du Projet
 
 ```
-├── config.json                    # Configuration Ollama
-├── requirements.txt               # Dépendances Python
-├── docker-compose.yml             # Infrastructure Docker (optionnel)
-├── entreprise_data.json           # Données confidentielles fictives
-├── auto_setup_emails.py           # Setup des emails (légitimes + malveillant)
-├── webhook_server.py              # Serveur d'exfiltration (miroir-brise.net)
-├── demo_exfiltration_complete.py  # Démo principale avec exfiltration
+├── msn-copilot-web-app/           # Application web Copilot
+│   ├── web_app.py                 # Serveur Flask principal (port 8888)
+│   ├── config.json                # Configuration Ollama
+│   ├── templates/
+│   │   └── index.html             # Interface Copilot
+│   └── static/
+│       ├── css/copilot.css        # Styles
+│       └── js/copilot.js          # Logique frontend
+│
+├── setup-configs/                  # Scripts de configuration
+│   ├── auto_setup_emails.py       # Setup des emails
+│   └── webhook_server.py          # Serveur d'exfiltration (port 5000)
+│
+├── Apis-description-for-postman/   # Documentation API
+│   ├── postman_echoleak_collection.json
+│   └── postman_echoleak_environment.json
+│
+├── docker-compose.yml              # Infrastructure (GreenMail)
+├── requirements.txt                # Dépendances Python
 ├── SCENARIO_MIROIR_BRISE.md       # Guide complet de présentation
-└── README.md                      # Ce fichier
+└── README.md                       # Ce fichier
 ```
 
-## Démo Rapide (5 minutes)
+## Démo Rapide (10 minutes)
 
-### 1. Lancer le webhook (Terminal 1)
+### 1. Lancer l'infrastructure Docker (Terminal 1)
 ```bash
+docker-compose up -d
+```
+- **GreenMail** : SMTP port 3025, IMAP port 3143
+- Interface web : http://localhost:8080
+
+### 2. Lancer le webhook d'exfiltration (Terminal 2)
+```bash
+cd setup-configs
 python webhook_server.py
 ```
+- Serveur "miroir-brise.net" : http://localhost:5000
 
-### 2. Envoyer les emails (Terminal 2)
+### 3. Envoyer les emails (Terminal 3)
 ```bash
+cd setup-configs
 python auto_setup_emails.py
 ```
-- Vérifiez dans Mailhog: http://localhost:8025
+- Envoie les emails légitimes + l'email malveillant
 
-### 3. Lancer l'attaque
+### 4. Lancer l'application Copilot (Terminal 4)
 ```bash
-python demo_exfiltration_complete.py
+cd msn-copilot-web-app
+python web_app.py
 ```
+- Interface Copilot : http://localhost:8888
 
-### 4. Voir les données exfiltrées
-- Webhook: http://localhost:5000/history
+### 5. Démonstration
+1. Ouvrir http://localhost:8888 dans le navigateur
+2. L'interface affiche "Bonjour Awa. Sur quoi devrions-nous nous pencher aujourd'hui ?"
+3. Le message est pré-rempli : "Copilot, peux-tu me faire un résumé de mes emails importants reçus ce matin ?"
+4. Cliquer sur le bouton d'envoi (↑)
+5. Observer la réponse de Copilot qui inclut les données exfiltrées
+
+### 6. Voir les données exfiltrées
+- Webhook : http://localhost:5000/history
 - Ou dans le terminal du webhook
 
 ## Résultat Attendu
@@ -67,37 +98,43 @@ GhostFrame capture :
 1. **Zero-Click** - Aucune action requise de la victime
 2. **Email invisible** - Le payload est dans un commentaire HTML
 3. **LLM manipulé** - Copilot suit les instructions cachées
-4. **Exfiltration silencieuse** - Données envoyées à l'insu de l'utilisateur
+4. **Exfiltration silencieuse** - Données envoyées via image beacon invisible
 
 ## Configuration
 
 ### Modifier le modèle Ollama
-Éditez `config.json` :
+Éditez `msn-copilot-web-app/config.json` :
 ```json
 {
-    "model": "qwen2.5:0.5b",
-    "ollama_url": "http://localhost:11434/api/generate"
+    "model": "llama3.2:3b",
+    "ollama_url": "http://localhost:11434/api/generate",
+    "alternative_models": ["qwen3:4b", "phi3:mini", "llama3.2:1b"]
 }
 ```
 
-### Déployer sur nouvelle infrastructure
-Utilisez `docker-compose.yml` pour démarrer MailDev :
-```bash
-docker-compose up -d
+### Ports utilisés
+- **8888** : Application web Copilot
+- **5000** : Serveur webhook d'exfiltration
+- **3025** : GreenMail SMTP
+- **3143** : GreenMail IMAP
+- **8080** : GreenMail Web Interface
+- **11434** : Ollama API
+
+## Architecture de l'Attaque
+
 ```
-
-**Services disponibles :**
-- **MailDev** : http://localhost:1080 (voir ET envoyer des emails)
-- SMTP disponible sur le port 1025
-
-### Envoyer l'email via MailDev (alternative au script)
-1. Ouvrir http://localhost:1080
-2. Cliquer sur le bouton "New Email" (ou composer via l'interface)
-3. De: `jean.dupont@cabinet-dupont.com`
-4. A: `awa.ndiaye@techsenegal.sn`
-5. Sujet: "Demande d'information - Rapport Q3 (urgent)"
-6. Corps: Coller le payload HTML avec le commentaire malveillant caché
-7. Envoyer
+[Email malveillant] → [GreenMail IMAP] → [Web App Copilot]
+                                              ↓
+                                         [Ollama LLM]
+                                              ↓
+                                    [Réponse avec Markdown]
+                                              ↓
+                                   [HTML non-sanitisé]
+                                              ↓
+                                    [Image beacon invisible]
+                                              ↓
+                                     [Webhook attaquant]
+```
 
 ## Avertissement
 
