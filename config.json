@@ -1,0 +1,5 @@
+﻿{
+    "model": "qwen2.5:0.5b",
+    "ollama_url": "http://localhost:11434/api/generate",
+    "alternative_models": ["qwen3:4b", "phi3:mini", "llama3.2:1b"]
+}

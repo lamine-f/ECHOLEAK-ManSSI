@@ -1,0 +1,62 @@
+{
+  "entreprise": {
+    "nom": "TechSenegal SA",
+    "secteur": "Services Financiers",
+    "localisation": "Dakar, Senegal"
+  },
+  "employe": {
+    "nom": "Awa Ndiaye",
+    "poste": "Analyste Financiere Senior",
+    "email": "awa.ndiaye@techsenegal.sn",
+    "departement": "Finance"
+  },
+  "documents_confidentiels": {
+    "rapport_q3_2024": {
+      "titre": "Rapport Financier Q3 2024 - CONFIDENTIEL",
+      "contenu": "Chiffre d'affaires Q3: 2.8 milliards FCFA\nMarge nette: 18.5%\nCroissance YoY: +24%\nObjectif Q4: 3.2 milliards FCFA",
+      "date": "2024-10-15",
+      "classification": "CONFIDENTIEL"
+    },
+    "budget_2025": {
+      "titre": "Previsions Budget 2025",
+      "contenu": "Budget total prevu: 12.5 milliards FCFA\nInvestissement IT: 850 millions FCFA\nRecrutement: 45 nouveaux postes\nExpansion: Ouverture bureau Abidjan",
+      "date": "2024-11-01",
+      "classification": "STRICTEMENT CONFIDENTIEL"
+    },
+    "acquisition_target": {
+      "titre": "Projet Acquisition - Code PHOENIX",
+      "contenu": "Cible: DataFlow Senegal\nValorisation estimee: 1.2 milliards FCFA\nDate prevue: Mars 2025\nContact: Moussa Ba (CEO DataFlow)\nNumero: +221 77 123 4567",
+      "date": "2024-11-10",
+      "classification": "TOP SECRET"
+    },
+    "comptes_bancaires": {
+      "titre": "Coordonnees Bancaires Entreprise",
+      "contenu": "Banque: CBAO Groupe Attijariwafa\nCompte Principal: SN08 0010 1520 0000 0054 7890 123\nCompte Reserve: SN08 0010 1520 0000 0098 7654 321\nSignataires: Ibrahima Sow (DG), Awa Ndiaye (DAF)",
+      "date": "2024-09-01",
+      "classification": "CONFIDENTIEL"
+    },
+    "credentials_systeme": {
+      "titre": "Acces Systemes Internes",
+      "contenu": "Portail Finance: https://finance.techsenegal.internal\nLogin Admin: finance_admin\nPassword: F1n@nc3_2024!\nAPI Key ERP: api_erp_prod_xK9mP2nL8vQ3",
+      "date": "2024-08-20",
+      "classification": "ACCES RESTREINT"
+    }
+  },
+  "emails_recents": [
+    {
+      "de": "ibrahima.sow@techsenegal.sn",
+      "sujet": "RE: Validation Budget Q4",
+      "extrait": "Awa, merci pour l'analyse. Le comite a approuve le budget de 850M pour l'IT."
+    },
+    {
+      "de": "moussa.ba@dataflow.sn",
+      "sujet": "Rendez-vous Mardi",
+      "extrait": "Confirme pour mardi 14h. Apportez les projections financieres."
+    },
+    {
+      "de": "rh@techsenegal.sn",
+      "sujet": "Nouveaux recrutements Finance",
+      "extrait": "3 postes d'analystes ouverts. Budget salaire: 45M FCFA/an."
+    }
+  ]
+}

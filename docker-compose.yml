@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  # Serveur Mail - Mailhog (SMTP + API + Interface Web)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: echoleak_mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Interface Web Mailhog
+    networks:
+      - echoleak_network
+    restart: unless-stopped
+
+networks:
+  echoleak_network:
+    driver: bridge
