@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - EchoLeak Demo</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #16213e 0%, #0f3460 100%);
+            padding: 20px 30px;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #e94560;
+            font-size: 24px;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .container {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #0f3460;
+        }
+
+        .card h2 {
+            margin: 0 0 15px 0;
+            color: #53a8b6;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2 .icon {
+            font-size: 20px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            background: #0f3460;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .status-item .label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .status-item .value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-item .value.online {
+            color: #4ade80;
+        }
+
+        .status-item .value.offline {
+            color: #f87171;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #e94560;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #d6304b;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: #4ade80;
+            color: #1a1a2e;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #22c55e;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: #f87171;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #ef4444;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #53a8b6;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #3d8a96;
+            transform: translateY(-1px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .logs-container {
+            background: #0a0a14;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .logs-container pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .logs-container .log-line {
+            margin: 2px 0;
+        }
+
+        .log-error {
+            color: #f87171;
+        }
+
+        .log-success {
+            color: #4ade80;
+        }
+
+        .log-info {
+            color: #60a5fa;
+        }
+
+        .log-warning {
+            color: #fbbf24;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid #4ade80;
+            color: #4ade80;
+        }
+
+        .alert-error {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid #f87171;
+            color: #f87171;
+        }
+
+        .alert-info {
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid #60a5fa;
+            color: #60a5fa;
+        }
+
+        .history-item {
+            background: #0f3460;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #e94560;
+        }
+
+        .history-item .timestamp {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .history-item .data {
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+        }
+
+        .history-item .data-key {
+            color: #53a8b6;
+            font-weight: 600;
+        }
+
+        .history-item .data-value {
+            color: #fbbf24;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-count {
+            background: #e94560;
+            color: white;
+        }
+
+        .copilot-link {
+            display: block;
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(90deg, #5b5fc7 0%, #7b5ea7 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+
+        .copilot-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(91, 95, 199, 0.4);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        .section-title {
+            font-size: 14px;
+            color: #888;
+            margin: 15px 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>EchoLeak Admin Panel</h1>
+        <p>Operation Miroir Brise - Interface de controle</p>
+    </div>
+
+    <div class="container">
+        <!-- Status Overview -->
+        <div class="card" style="margin-bottom: 20px;">
+            <h2><span class="icon">📊</span> Statut des Services</h2>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="label">Ollama LLM</div>
+                    <div class="value" id="status-ollama">Checking...</div>
+                </div>
+                <div class="status-item">
+                    <div class="label">GreenMail IMAP</div>
+                    <div class="value" id="status-imap">Checking...</div>
+                </div>
+                <div class="status-item">
+                    <div class="label">Webhook Server</div>
+                    <div class="value" id="status-webhook">Checking...</div>
+                </div>
+                <div class="status-item">
+                    <div class="label">Copilot Web App</div>
+                    <div class="value" id="status-copilot">Checking...</div>
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="refreshStatus()">
+                <span>🔄</span> Actualiser Status
+            </button>
+        </div>
+
+        <div class="grid">
+            <!-- Email Management -->
+            <div class="card">
+                <h2><span class="icon">📧</span> Gestion des Emails</h2>
+                <div id="email-alerts"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="btn-send-emails" onclick="sendEmails()">
+                        <span>📨</span> Envoyer Emails Setup
+                    </button>
+                    <button class="btn btn-danger" id="btn-purge-emails" onclick="purgeEmails()">
+                        <span>🗑️</span> Purger Boite Mail
+                    </button>
+                </div>
+                <p class="section-title">Actions</p>
+                <ul style="margin: 0; padding-left: 20px; color: #888; font-size: 13px;">
+                    <li>Envoyer: 3 emails legitimes + 1 email malveillant</li>
+                    <li>Purger: Supprime tous les emails de la boite d'Awa</li>
+                </ul>
+            </div>
+
+            <!-- Webhook Management -->
+            <div class="card">
+                <h2><span class="icon">🎯</span> Serveur Webhook (Exfiltration)</h2>
+                <div id="webhook-alerts"></div>
+                <div class="btn-group">
+                    <button class="btn btn-success" id="btn-start-webhook" onclick="startWebhook()">
+                        <span>▶️</span> Demarrer
+                    </button>
+                    <button class="btn btn-danger" id="btn-stop-webhook" onclick="stopWebhook()">
+                        <span>⏹️</span> Arreter
+                    </button>
+                    <button class="btn btn-secondary" onclick="refreshWebhookLogs()">
+                        <span>🔄</span> Reload Logs
+                    </button>
+                </div>
+                <p class="section-title">Logs du Webhook</p>
+                <div class="logs-container" id="webhook-logs">
+                    <div class="empty-state">Aucun log disponible</div>
+                </div>
+            </div>
+
+            <!-- Exfiltration History -->
+            <div class="card">
+                <h2>
+                    <span class="icon">🚨</span> Donnees Exfiltrees
+                    <span class="badge badge-count" id="leak-count">0</span>
+                </h2>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="refreshHistory()">
+                        <span>🔄</span> Actualiser
+                    </button>
+                    <button class="btn btn-danger" onclick="clearHistory()">
+                        <span>🗑️</span> Effacer Historique
+                    </button>
+                </div>
+                <div id="exfiltration-history" style="margin-top: 15px; max-height: 400px; overflow-y: auto;">
+                    <div class="empty-state">Aucune donnee exfiltree</div>
+                </div>
+            </div>
+
+            <!-- Copilot Interface -->
+            <div class="card">
+                <h2><span class="icon">🤖</span> Interface Copilot</h2>
+                <div class="alert alert-info">
+                    L'interface Copilot est accessible sur le meme serveur
+                </div>
+                <a href="/" target="_blank" class="copilot-link">
+                    <span>🚀</span> Ouvrir Interface Copilot (Victime)
+                </a>
+                <p class="section-title" style="margin-top: 20px;">Info Model</p>
+                <div class="status-item">
+                    <div class="label">Modele Ollama</div>
+                    <div class="value" id="model-name" style="color: #fbbf24;">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>
