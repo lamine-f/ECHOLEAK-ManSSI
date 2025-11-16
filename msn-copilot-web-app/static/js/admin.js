@@ -101,7 +101,7 @@ async function sendEmails() {
         alertsDiv.innerHTML = `<div class="alert alert-error">Erreur: ${error.message}</div>`;
     } finally {
         btn.disabled = false;
-        btn.innerHTML = '<span>📨</span> Envoyer Emails Setup';
+        btn.innerHTML = '[SEND EMAILS]';
     }
 }
 
@@ -141,7 +141,7 @@ async function purgeEmails() {
         alertsDiv.innerHTML = `<div class="alert alert-error">Erreur: ${error.message}</div>`;
     } finally {
         btn.disabled = false;
-        btn.innerHTML = '<span>🗑️</span> Purger Boite Mail';
+        btn.innerHTML = '[PURGE INBOX]';
     }
 }
 
@@ -177,7 +177,7 @@ async function startWebhook() {
     } catch (error) {
         alertsDiv.innerHTML = `<div class="alert alert-error">Erreur: ${error.message}</div>`;
     } finally {
-        btn.innerHTML = '<span>▶️</span> Demarrer';
+        btn.innerHTML = '[START]';
         refreshStatus();
     }
 }
@@ -213,7 +213,7 @@ async function stopWebhook() {
     } catch (error) {
         alertsDiv.innerHTML = `<div class="alert alert-error">Erreur: ${error.message}</div>`;
     } finally {
-        btn.innerHTML = '<span>⏹️</span> Arreter';
+        btn.innerHTML = '[STOP]';
         refreshStatus();
     }
 }
