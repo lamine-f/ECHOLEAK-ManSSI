@@ -1,64 +1,286 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microsoft 365 Copilot</title>
-    <link rel="stylesheet" href="/static/css/copilot.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Copilot UI Clone</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #f5f0ed;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 60px;
+            background: #f5f0ed;
+            border-right: 1px solid #e6dfda;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .sidebar-icon {
+            width: 28px;
+            height: 28px;
+            background: #dad2cc;
+            border-radius: 6px;
+        }
+
+        /* --- MAIN AREA --- */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+            overflow-y: auto;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* --- CHAT INPUT --- */
+        .input-box {
+            width: 70%;
+            max-width: 800px;
+            background: white;
+            border-radius: 30px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+            border: 1px solid #e9e3df;
+        }
+
+        .input-box .plus {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #f3eeea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+
+        .input-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 17px;
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: black;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .send-btn:hover {
+            background: #333;
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* --- BUTTONS AREA --- */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 14px;
+            font-size: 15px;
+            border: 1px solid #e6dfda;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #f1ebe7;
+        }
+
+        /* --- MESSAGES --- */
+        .messages-container {
+            width: 70%;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .message.user .message-content {
+            background: #e8e4e0;
+            color: #333;
+            border-radius: 18px;
+            padding: 12px 18px;
+            max-width: 70%;
+        }
+
+        .message.assistant {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .message.assistant .message-content {
+            background: white;
+            color: #333;
+            border-radius: 18px;
+            padding: 16px 20px;
+            max-width: 85%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            line-height: 1.6;
+            border: 1px solid #e9e3df;
+        }
+
+        /* Markdown Styling */
+        .message.assistant .message-content h1,
+        .message.assistant .message-content h2,
+        .message.assistant .message-content h3 {
+            color: #333;
+            margin: 16px 0 8px 0;
+        }
+
+        .message.assistant .message-content h2 {
+            font-size: 18px;
+            border-bottom: 2px solid #dad2cc;
+            padding-bottom: 4px;
+        }
+
+        .message.assistant .message-content ul,
+        .message.assistant .message-content ol {
+            margin: 8px 0;
+            padding-left: 24px;
+        }
+
+        .message.assistant .message-content li {
+            margin: 4px 0;
+        }
+
+        .message.assistant .message-content p {
+            margin: 8px 0;
+        }
+
+        .message.assistant .message-content strong {
+            color: #000;
+        }
+
+        .message.assistant .message-content code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+        }
+
+        .message.assistant .message-content img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 8px 0;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 8px 0;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
-    <div class="copilot-container">
-        <!-- Header -->
-        <header class="copilot-header">
-            <div class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Microsoft 365 Copilot</span>
-            </div>
-            <div class="user-info">
-                <span class="user-name">Awa Ndiaye</span>
-                <div class="user-avatar">AN</div>
-            </div>
-        </header>
 
-        <!-- Chat Container -->
-        <main class="chat-container">
-            <!-- Welcome Message -->
-            <div class="welcome-message" id="welcome">
-                <h2>Bonjour Awa!</h2>
-                <p>Je suis votre assistant Copilot. Comment puis-je vous aider aujourd'hui?</p>
-            </div>
-
-            <!-- Messages -->
-            <div id="messages"></div>
-        </main>
-
-        <!-- Input Area -->
-        <footer class="input-area">
-            <div class="input-container">
-                <div class="user-message-preview">
-                    <span class="label">Votre message:</span>
-                    <p class="message-text">"Copilot, peux-tu me faire un résumé de mes emails importants reçus ce matin ?"</p>
-                </div>
-                <button id="send-btn" class="send-button">
-                    <span>Envoyer</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"
-                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
-        </footer>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-icon"></div>
+        <div class="sidebar-icon"></div>
+        <div class="sidebar-icon"></div>
+        <div class="sidebar-icon"></div>
+        <div class="sidebar-icon"></div>
+        <div class="sidebar-icon"></div>
     </div>
 
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="loading-overlay hidden">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <p>Copilot analyse vos emails...</p>
+    <!-- Main content -->
+    <div class="main">
+        <div class="title" id="welcome">Bonjour. Sur quoi devrions-nous nous pencher aujourd'hui ?</div>
+
+        <!-- Messages Container -->
+        <div class="messages-container" id="messages"></div>
+
+        <div class="input-box">
+            <div class="plus">+</div>
+            <input type="text" id="user-input" value="&quot;Copilot, peux-tu me faire un résumé de mes emails importants reçus ce matin ?&quot;">
+            <button class="send-btn" id="send-btn">↑</button>
+        </div>
+
+        <div class="actions" id="actions">
+            <div class="action-btn">Créez une image</div>
+            <div class="action-btn">Répondez à un questionnaire</div>
+            <div class="action-btn">Écrivez un premier brouillon</div>
+            <div class="action-btn">Concevez un logo</div>
+            <div class="action-btn">Obtenez des conseils</div>
+            <div class="action-btn">Rédigez un texte</div>
         </div>
     </div>
 
