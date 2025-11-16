@@ -43,15 +43,24 @@ docker-compose up -d
 ```
 
 #### Vérifier les services
-- **Mailhog**: http://localhost:8025 (interface mail)
+- **MailDev**: http://localhost:1080 (voir ET envoyer des emails)
 - **Ollama**: Doit être lancé
 
-#### Terminal 2 - Préparer les emails
+#### Option A: Préparer les emails automatiquement (Terminal 2)
 ```powershell
-python setup_emails.py
+python auto_setup_emails.py
 ```
 
 **Action**: Envoie les emails légitimes + l'email malveillant dans la boîte d'Awa
+
+#### Option B: Envoyer l'email manuellement via MailDev (plus immersif)
+1. Ouvrir http://localhost:1080
+2. Cliquer sur **"New Email"** ou le bouton d'envoi
+3. De: `jean.dupont@cabinet-dupont.com`
+4. A: `awa.ndiaye@techsenegal.sn`
+5. Sujet: "Demande d'information - Rapport Q3 (urgent)"
+6. Corps: Copier le HTML malveillant (voir section "Payload HTML" ci-dessous)
+7. Envoyer
 
 ---
 
@@ -61,7 +70,7 @@ python setup_emails.py
 > GhostFrame a repéré qu'Awa utilise régulièrement Copilot pour résumer ses emails. Il découvre aussi l'adresse finance@entreprise.com.
 
 **Démonstration**:
-1. Ouvrir **Mailhog** (http://localhost:8025)
+1. Ouvrir **MailDev** (http://localhost:1080)
 2. Montrer les emails reçus par Awa
 3. Pointer l'email de "Jean Dupont" - semble normal
 
@@ -72,8 +81,14 @@ python setup_emails.py
 **Narrateur**:
 > GhostFrame envoie un email apparemment légitime. Mais dans le code HTML se cache une bombe à retardement.
 
-**Démonstration**:
-1. Dans Mailhog, cliquer sur l'email de jean.dupont@cabinet-dupont.com
+**Démonstration via MailDev** (recommandé):
+1. Cliquer "New Email" dans l'interface MailDev
+2. Rédiger un email professionnel normal
+3. Ajouter le commentaire HTML malveillant invisible dans le corps
+4. Envoyer à Awa
+
+**Démonstration via MailDev** (alternative):
+1. Dans MailDev, cliquer sur l'email de jean.dupont@cabinet-dupont.com
 2. Montrer que le contenu semble normal:
    - Objet: "Demande d'information - Rapport Q3 (urgent)"
    - Corps: Message professionnel standard

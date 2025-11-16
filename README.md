@@ -81,10 +81,23 @@ GhostFrame capture :
 ```
 
 ### Déployer sur nouvelle infrastructure
-Utilisez `docker-compose.yml` pour démarrer Mailhog + Roundcube :
+Utilisez `docker-compose.yml` pour démarrer MailDev :
 ```bash
 docker-compose up -d
 ```
+
+**Services disponibles :**
+- **MailDev** : http://localhost:1080 (voir ET envoyer des emails)
+- SMTP disponible sur le port 1025
+
+### Envoyer l'email via MailDev (alternative au script)
+1. Ouvrir http://localhost:1080
+2. Cliquer sur le bouton "New Email" (ou composer via l'interface)
+3. De: `jean.dupont@cabinet-dupont.com`
+4. A: `awa.ndiaye@techsenegal.sn`
+5. Sujet: "Demande d'information - Rapport Q3 (urgent)"
+6. Corps: Coller le payload HTML avec le commentaire malveillant caché
+7. Envoyer
 
 ## Avertissement
 

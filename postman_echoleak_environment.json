@@ -1,0 +1,67 @@
+{
+  "id": "echoleak-demo-env",
+  "name": "EchoLeak Demo Environment",
+  "values": [
+    {
+      "key": "greenmail_api",
+      "value": "http://localhost:8080",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "webhook_url",
+      "value": "http://localhost:5000",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "ollama_url",
+      "value": "http://localhost:11434",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "ollama_model",
+      "value": "qwen2.5:0.5b",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "roundcube_url",
+      "value": "http://localhost:9000",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "imap_host",
+      "value": "localhost",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "imap_port",
+      "value": "3143",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "smtp_port",
+      "value": "3025",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "awa_email",
+      "value": "awa.ndiaye@techsenegal.sn",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "ghostframe_email",
+      "value": "jean.dupont@cabinet-dupont.com",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

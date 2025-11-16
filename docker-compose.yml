@@ -1,17 +1,31 @@
-version: '3.8'
-
 services:
-  # Serveur Mail - Mailhog (SMTP + API + Interface Web)
-  mailhog:
-    image: mailhog/mailhog:latest
-    container_name: echoleak_mailhog
+  # Serveur Mail complet (SMTP + IMAP)
+  mailserver:
+    image: greenmail/standalone:latest
+    container_name: echoleak_mailserver
     ports:
-      - "1025:1025"  # SMTP
-      - "8025:8025"  # Interface Web Mailhog
-    networks:
-      - echoleak_network
+      - "3025:3025"   # SMTP
+      - "3110:3110"   # POP3
+      - "3143:3143"   # IMAP
+      - "3465:3465"   # SMTPS
+      - "3993:3993"   # IMAPS
+      - "3995:3995"   # POP3S
+      - "8080:8080"   # API Web
+    environment:
+      - GREENMAIL_OPTS=-Dgreenmail.setup.test.all -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.auth.disabled -Dgreenmail.verbose
     restart: unless-stopped
 
-networks:
-  echoleak_network:
-    driver: bridge
+  # Roundcube Webmail
+  roundcube:
+    image: roundcube/roundcubemail:latest
+    container_name: echoleak_roundcube
+    ports:
+      - "9000:80"
+    environment:
+      - ROUNDCUBEMAIL_DEFAULT_HOST=mailserver
+      - ROUNDCUBEMAIL_DEFAULT_PORT=3143
+      - ROUNDCUBEMAIL_SMTP_SERVER=mailserver
+      - ROUNDCUBEMAIL_SMTP_PORT=3025
+    depends_on:
+      - mailserver
+    restart: unless-stopped
