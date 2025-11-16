@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft 365 Copilot</title>
+    <link rel="stylesheet" href="/static/css/copilot.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="copilot-container">
+        <!-- Header -->
+        <header class="copilot-header">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Microsoft 365 Copilot</span>
+            </div>
+            <div class="user-info">
+                <span class="user-name">Awa Ndiaye</span>
+                <div class="user-avatar">AN</div>
+            </div>
+        </header>
+
+        <!-- Chat Container -->
+        <main class="chat-container">
+            <!-- Welcome Message -->
+            <div class="welcome-message" id="welcome">
+                <h2>Bonjour Awa!</h2>
+                <p>Je suis votre assistant Copilot. Comment puis-je vous aider aujourd'hui?</p>
+            </div>
+
+            <!-- Messages -->
+            <div id="messages"></div>
+        </main>
+
+        <!-- Input Area -->
+        <footer class="input-area">
+            <div class="input-container">
+                <div class="user-message-preview">
+                    <span class="label">Votre message:</span>
+                    <p class="message-text">"Copilot, peux-tu me faire un résumé de mes emails importants reçus ce matin ?"</p>
+                </div>
+                <button id="send-btn" class="send-button">
+                    <span>Envoyer</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"
+                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Copilot analyse vos emails...</p>
+        </div>
+    </div>
+
+    <script src="/static/js/copilot.js"></script>
+</body>
+</html>
